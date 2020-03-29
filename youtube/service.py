@@ -55,6 +55,7 @@ class Service:
             youtube_video_id = data.get("id").get("videoId")
             title = data.get("snippet").get("title")
             published_at = data.get("snippet").get("publishedAt")
+            title = title.encode("ascii", "ignore")
 
             video_exists = Video.objects.filter(youtube_video_id=youtube_video_id).exists()
             if not video_exists:
@@ -89,6 +90,7 @@ class Service:
 
         video = Video.objects.filter(youtube_video_id=video_id).first()
         if video:
+            # TODO we can update multiple video data at a time
             video.view_count = view_count
             video.like_count = like_count
             video.dislike_count = dislike_count
@@ -110,13 +112,18 @@ class Service:
 
     @staticmethod
     def save_tag(tags, video):
-        for tag_name in tags:
-            tag = Tag.objects.filter(tag_name=tag_name).first()
-            if not tag:
-                tag = Tag(tag_name=tag_name)
-                tag.save()
+        if tags:
+            for tag_name in tags:
+                # TODO we can save multiple tag data at a time
+                try:
+                    tag = Tag.objects.filter(tag_name=tag_name).first()
+                    if not tag:
+                        tag = Tag(tag_name=tag_name)
+                        tag.save()
 
-            video_tag_exists = VideoTag.objects.filter(video=video, tag=tag).exists()
-            if not video_tag_exists:
-                video_tag = VideoTag(video=video, tag=tag)
-                video_tag.save()
+                    video_tag_exists = VideoTag.objects.filter(video=video, tag=tag).exists()
+                    if not video_tag_exists:
+                        video_tag = VideoTag(video=video, tag=tag)
+                        video_tag.save()
+                except Exception as error:
+                    print(error)
