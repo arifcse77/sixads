@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-
 from .service import Service
 
 youtube_api_v3 = "https://www.googleapis.com/youtube/v3/"
@@ -10,6 +9,14 @@ service = Service(youtube_api_v3=youtube_api_v3, api_key=api_key, channel_id=cha
 
 
 def index(request):
+    # We can add this endpoint at crontab with 10 mins interval for track video stats
     service.youtube_video_process()
     return JsonResponse({"message": "Youtube API processing is successfully completed"})
 
+
+# TODO API method can be using django rest framework
+def api(request):
+    tag_name = request.GET.get("tag_name") # TODO Processing parameters can be using django forms
+    video_performance = request.GET.get("video_performance") # TODO Processing parameters can be using django forms
+    videos = service.video_report(tag_name=tag_name, video_performance=video_performance)
+    return JsonResponse({"videos": videos})

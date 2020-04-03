@@ -9,8 +9,12 @@
 # Feature
 * Scrapes channel videos with tags and stats and save video stats data (Task-1 and Task-2)
     * Endpoint = http://localhost:8000/youtube/
-    * You can add this endpoint at crontab with 10 mins interval
+    * You can add this endpoint at crontab with 10 mins interval for track video stats
     * if video stats is changed from API then we are updating stats data at database
+    
+* Task-3
+    * By tags endpoint = http://localhost:8000/youtube/api?tag_name=your_desired_tag_name
+    * By video performance endpoint = http://localhost:8000/youtube/api?video_performance=1
 
 # Tutorial Reference
 * https://developers.google.com/youtube/v3/getting-started

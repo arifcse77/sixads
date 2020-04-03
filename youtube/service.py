@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import requests
-
+from django.db import connection
 from .models import (Channel, Video, Stats, VideoTag, Tag)
 
 now = datetime.now()
@@ -127,3 +127,22 @@ class Service:
                         video_tag.save()
                 except Exception as error:
                     print(error)
+
+    def video_report(self, tag_name=None, video_performance=None):
+        videos = []
+
+        with connection.cursor() as cursor:
+            # TODO This query can be using ORM
+            if tag_name:
+                cursor.execute('SELECT * FROM youtube_video v, youtube_videotag vt, youtube_tag t '
+                               'WHERE v.id=vt.video_id '
+                               'AND vt.tag_id=t.id '
+                               'AND t.tag_name="' + tag_name + '"')
+                videos = cursor.fetchall()
+            if video_performance:
+                cursor.execute('SELECT count(*) as total_count, video_id FROM youtube_video v, youtube_stats s '
+                               'WHERE v.id=s.video_id AND (s.track_time BETWEEN v.published_at AND (v.published_at + INTERVAL 1 HOUR)) GROUP BY s.video_id ORDER BY total_count DESC')
+
+                videos = cursor.fetchall()
+
+        return videos
