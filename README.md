@@ -15,6 +15,9 @@
 * Task-3
     * By tags endpoint = http://localhost:8000/youtube/api?tag_name=your_desired_tag_name
     * By video performance endpoint = http://localhost:8000/youtube/api?video_performance=1
+    
+* Bonus point
+    * Channel list endpoint = http://localhost:8000/youtube/channels
 
 # Tutorial Reference
 * https://developers.google.com/youtube/v3/getting-started

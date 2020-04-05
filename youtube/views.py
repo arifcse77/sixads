@@ -1,3 +1,4 @@
+import requests
 from django.http import JsonResponse
 from .service import Service
 
@@ -20,3 +21,13 @@ def api(request):
     video_performance = request.GET.get("video_performance") # TODO Processing parameters can be using django forms
     videos = service.video_report(tag_name=tag_name, video_performance=video_performance)
     return JsonResponse({"videos": videos})
+
+
+def channels(request):
+    channel_list = {}
+    api_url = "{youtube_api_v3}channels?part=snippet,contentDetails,statistics&forUsername=jambrose42&key={api_key}".format(youtube_api_v3=youtube_api_v3, api_key=api_key)
+    channel_list_response = requests.get(api_url, timeout=60)
+    if channel_list_response.status_code == 200:
+        channel_list = channel_list_response.json()
+
+    return JsonResponse(channel_list)
